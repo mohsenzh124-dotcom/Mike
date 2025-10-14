@@ -1,0 +1,56 @@
+Задача 1: Анализ температурных данных (Массивы, базовые типы)
+
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    int N;
+
+    cout << "أدخل عدد الأيام N للمحللة: ";
+    cin >> N;
+
+    if (N <= 0) {
+        cout << "عدد الأيام يجب أن يكون موجباً!" << endl;
+        return 1;
+    }
+
+    vector<double> temperatures(N);
+
+    cout << "أدخل درجات الحرارة لـ " << N << " يومًا:" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << "اليوم " << (i + 1) << ": ";
+        cin >> temperatures[i];
+    }
+
+    double sum = 0;
+    for (int i = 0; i < N; i++) {
+        sum += temperatures[i];
+    }
+    double average = sum / N;
+
+    double minTemp = temperatures[0];
+    double maxTemp = temperatures[0];
+    for (int i = 1; i < N; i++) {
+        if (temperatures[i] < minTemp) minTemp = temperatures[i];
+        if (temperatures[i] > maxTemp) maxTemp = temperatures[i];
+    }
+
+    int daysBelowAverage = 0;
+    for (int i = 0; i < N; i++) {
+        if (temperatures[i] < average) daysBelowAverage++;
+    }
+
+    cout << fixed << setprecision(2);
+    cout << "\nنتائج تحليل درجات الحرارة:" << endl;
+    cout << "-----------------------------" << endl;
+    cout << "متوسط درجة الحرارة: " << average << "°" << endl;
+    cout << "أدنى درجة حرارة: " << minTemp << "°" << endl;
+    cout << "أعلى درجة حرارة: " << maxTemp << "°" << endl;
+    cout << "عدد الأيام الأقل من المتوسط: " << daysBelowAverage << endl;
+
+    return 0;
+}
