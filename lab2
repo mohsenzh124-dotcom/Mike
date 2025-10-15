@@ -1,0 +1,676 @@
+#### **Задача 1: Анализ температурных данных (Массивы, базовые типы)**
+
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    int N;
+
+    cout << "أدخل عدد الأيام N للمحللة: ";
+    cin >> N;
+
+    if (N <= 0) {
+        cout << "عدد الأيام يجب أن يكون موجباً!" << endl;
+        return 1;
+    }
+
+    vector<double> temperatures(N);
+
+    cout << "أدخل درجات الحرارة لـ " << N << " يومًا:" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << "اليوم " << (i + 1) << ": ";
+        cin >> temperatures[i];
+    }
+
+    double sum = 0;
+    for (int i = 0; i < N; i++) {
+        sum += temperatures[i];
+    }
+    double average = sum / N;
+
+    double minTemp = temperatures[0];
+    double maxTemp = temperatures[0];
+    for (int i = 1; i < N; i++) {
+        if (temperatures[i] < minTemp) minTemp = temperatures[i];
+        if (temperatures[i] > maxTemp) maxTemp = temperatures[i];
+    }
+
+    int daysBelowAverage = 0;
+    for (int i = 0; i < N; i++) {
+        if (temperatures[i] < average) daysBelowAverage++;
+    }
+
+    cout << fixed << setprecision(2);
+    cout << "\nنتائج تحليل درجات الحرارة:" << endl;
+    cout << "-----------------------------" << endl;
+    cout << "متوسط درجة الحرارة: " << average << "°" << endl;
+    cout << "أدنى درجة حرارة: " << minTemp << "°" << endl;
+    cout << "أعلى درجة حرارة: " << maxTemp << "°" << endl;
+    cout << "عدد الأيام الأقل من المتوسط: " << daysBelowAverage << endl;
+
+    return 0;
+}
+
+#### **Задача 2: Манипуляции со строками (Строки как массивы, указатели)**
+
+#include <iostream>
+
+int main() {
+    const int MAX_SIZE = 100;
+    char str[MAX_SIZE];
+    char targetChar;
+
+    // 1. Reading the text string from the user
+    std::cout << "Enter a text string: ";
+    std::cin.getline(str, MAX_SIZE);
+
+    // 2. Calculating the length of a string without using strlen
+    int length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    std::cout << "Length of the text string: " << length << std::endl;
+
+    // 3. Reverse the text string in its place
+    for (int i = 0; i < length / 2; i++) {
+        char temp = str[i];
+        str[i] = str[length - 1 - i];
+        str[length - 1 - i] = temp;
+    }
+    std::cout << "The inverted series: " << str << std::endl;
+
+    // 4. Calculate the number of times a particular character appears
+    std::cout << "Enter the character whose repetitions you want to count: ";
+    std::cin >> targetChar;
+
+    int count = 0;
+    for (int i = 0; i < length; i++) {
+        if (str[i] == targetChar) {
+            count++;
+        }
+    }
+    std::cout << "Number of times the character appears '" << targetChar << "': " << count << std::endl;
+
+    return 0;
+}
+
+
+#### **Задача 3: Калькулятор для комплексных чисел (Пользовательские типы данных)**
+
+#include <iostream>
+using namespace std;
+
+// Definition of the structure of a complex number
+struct Complex {
+    double real;    // The real part
+    double imag;    // The imaginary part
+};
+
+// The summation function
+Complex add(Complex a, Complex b) {
+    Complex result;
+    result.real = a.real + b.real;
+    result.imag = a.imag + b.imag;
+    return result;
+}
+
+// Subtraction function
+Complex subtract(Complex a, Complex b) {
+    Complex result;
+    result.real = a.real - b.real;
+    result.imag = a.imag - b.imag;
+    return result;
+}
+
+// Multiplication function
+Complex multiply(Complex a, Complex b) {
+    Complex result;
+    result.real = (a.real * b.real) - (a.imag * b.imag);
+    result.imag = (a.real * b.imag) + (a.imag * b.real);
+    return result;
+}
+
+// Printing function
+void print(Complex c) {
+    if (c.imag >= 0)
+        cout << "(" << c.real << " + " << c.imag << "i)";
+    else
+        cout << "(" << c.real << " - " << -c.imag << "i)";
+}
+
+int main() {
+    // Create composite numbers for testing
+    Complex num1 = { 3.0, 2.0 };  // 3 + 2i
+    Complex num2 = { 1.0, -4.0 }; // 1 - 4i
+    Complex num3 = { 0.0, 1.0 };  // i
+
+    cout << "Composite numbers used:" << endl;
+    cout << "num1 = "; print(num1); cout << endl;
+    cout << "num2 = "; print(num2); cout << endl;
+    cout << "num3 = "; print(num3); cout << endl << endl;
+
+    // View the results of operations
+    cout << "Results of operations:" << endl;
+
+    // sum
+    Complex sum = add(num1, num2);
+    cout << "sum: ";
+    print(num1); cout << " + "; print(num2); cout << " = ";
+    print(sum); cout << endl;
+
+    // subtract
+    Complex diff = subtract(num1, num2);
+    cout << "subtract: ";
+    print(num1); cout << " - "; print(num2); cout << " = ";
+    print(diff); cout << endl;
+
+    // multiply
+    Complex product1 = multiply(num1, num2);
+    cout << "multiply: ";
+    print(num1); cout << " * "; print(num2); cout << " = ";
+    print(product1); cout << endl;
+
+    // Multiplying a complex number by i
+    Complex product2 = multiply(num1, num3);
+    cout << "Multiplying by i: ";
+    print(num1); cout << " * "; print(num3); cout << " = ";
+    print(product2); cout << endl;
+
+
+    return 0;
+}
+
+#### **Задача 4: Обмен значений (Ссылки)**
+
+#include <iostream>
+using namespace std;
+
+// 1. Scrolling by value (will not work)
+void swapByValue(int a, int b) {
+    int temp = a;
+    a = b;
+    b = temp;
+    cout << "Inside the value-passing function: a = " << a << ", b = " << b << endl;
+}
+
+// 2. Scrolling with the cursor (works)
+void swapByPointer(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+    cout << "Inside the cursor scrolling function: *a = " << *a << ", *b = " << *b << endl;
+}
+
+// 3. Scrolling by reference (works)
+void swapByReference(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+    cout << "Inside the scroll function by reference: a = " << a << ", b = " << b << endl;
+}
+
+int main() {
+    int x = 5, y = 10;
+
+    cout << "Original values: x = " << x << ", y = " << y << endl << endl;
+
+    // 1. Testing with value scrolling
+    cout << "1. Scrolling by value:" << endl;
+    cout << "Before the recall: x = " << x << ", y = " << y << endl;
+    swapByValue(x, y);
+    cout << "After the recall: x = " << x << ", y = " << y << endl;
+    cout << "X and y have not changed in the main function!" << endl << endl;
+
+    // Reset values
+    x = 5; y = 10;
+    // 2. Testing with cursor scrolling
+    cout << "2. Scrolling with the cursor:" << endl;
+    cout << "Before the recall: x = " << x << ", y = " << y << endl;
+    swapByPointer(&x, &y);
+    cout << "After the recall: x = " << x << ", y = " << y << endl;
+    cout << "X and y have been successfully exchanged!" << endl << endl;
+
+    // Reset values
+    x = 5; y = 10;
+
+    // 3. Testing with scrolling by reference
+    cout << "3. Scrolling by reference:" << endl;
+    cout << "Before the recall: x = " << x << ", y = " << y << endl;
+    swapByReference(x, y);
+    cout << "After the recall: x = " << x << ", y = " << y << endl;
+    cout << " X and y have been successfully exchanged!" << endl << endl;
+
+    return 0;
+}
+
+#### **Задача 5: Динамический массив структур (Динамическая память, структуры)**
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Definition of the book structure
+struct Book {
+    string title;
+    string author;
+    int year;
+    double price;
+};
+
+// A function for entering data of one book
+void inputBook(Book& book) {
+    cout << "Enter the title of the book: ";
+    cin.ignore(); // Cleaning the input buffer
+    getline(cin, book.title);
+
+    cout << "Enter the author's name: ";
+    getline(cin, book.author);
+
+    cout << "Enter the year of publication: ";
+    cin >> book.year;
+
+    cout << "Enter the price of the book: ";
+    cin >> book.price;
+    cout << "------------------------" << endl;
+}
+
+// A function for displaying all books
+void printBooks(Book* books, int size) {
+    cout << "\n=== List of books in the library ===" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << "book " << i + 1 << ":" << endl;
+        cout << "  title: " << books[i].title << endl;
+        cout << "  Author: " << books[i].author << endl;
+        cout << "  year of publication: " << books[i].year << endl;
+        cout << "  price: " << books[i].price << " $" << endl;
+        cout << "------------------------" << endl;
+    }
+}
+
+// A function for finding the most expensive book
+void findMostExpensiveBook(Book* books, int size) {
+    if (size == 0) {
+        cout << "The library is empty!" << endl;
+        return;
+    }
+
+    int maxIndex = 0;
+    for (int i = 1; i < size; i++) {
+        if (books[i].price > books[maxIndex].price) {
+            maxIndex = i;
+        }
+    }
+
+    cout << "\n=== The most expensive book ===" << endl;
+    cout << "title: " << books[maxIndex].title << endl;
+    cout << "author: " << books[maxIndex].author << endl;
+    cout << "year of publication: " << books[maxIndex].year << endl;
+    cout << "price: " << books[maxIndex].price << " $" << endl;
+}
+
+int main() {
+    int N;
+
+    // Request the number of books from the user
+    cout << "Enter the number of books in the library: ";
+    cin >> N;
+
+    // Input validation
+    if (N <= 0) {
+        cout << "The number of books should be positive!" << endl;
+        return 1;
+    }
+
+    // Dynamic memory allocation
+    Book* library = new Book[N];
+
+    // Filling the matrix with data
+    cout << "\nEnter book data:" << endl;
+    for (int i = 0; i < N; i++) {
+        cout << "book " << i + 1 << ":" << endl;
+        inputBook(library[i]);
+    }
+
+    // View all books
+    printBooks(library, N);
+
+    // Finding the most expensive book
+    findMostExpensiveBook(library, N);
+
+    // Freeing memory
+    delete[] library;
+
+
+
+    return 0;
+}
+
+### **Задача 6: Работа с массивами через указатели (Указатели, арифметика указателей)**
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    const int SIZE = 10;
+    int arr1[SIZE];  // The first Matrix
+    int arr2[SIZE];  // The second matrix
+
+    // 1. Filling the matrix with a Fibonacci sequence using indicators
+    int* ptr = arr1;
+
+    // The first two elements of Fibonacci
+    *ptr = 0;        // arr1[0] = 0
+    *(ptr + 1) = 1;  // arr1[1] = 1
+
+    // The rest of the elements using the calculation of indicators
+    for (int* current = ptr + 2; current < ptr + SIZE; current++) {
+        *current = *(current - 1) + *(current - 2);
+    }
+
+    // View the first Matrix
+    cout << "The first Matrix (Fibonacci): ";
+    for (int* p = arr1; p < arr1 + SIZE; p++) {
+        cout << *p << " ";
+    }
+    cout << endl;
+
+    // 2. Finding the sum of elements using indicators
+    int sum = 0;
+    for (int* p = arr1; p < arr1 + SIZE; p++) {
+        sum += *p;
+    }
+    cout << "Total elements: " << sum << endl;
+
+    // 3. Finding the minimum element using indicators
+    int* minPtr = arr1;  // A pointer to the minimum element
+    for (int* p = arr1 + 1; p < arr1 + SIZE; p++) {
+        if (*p < *minPtr) {
+            minPtr = p;
+        }
+    }
+    cout << "The minimum element: " << *minPtr << " (In position " << (minPtr - arr1) << ")" << endl;
+
+
+    // A method of reverse copying in one loop
+    cout << "\nThe method of reverse copying: ";
+    int* p1 = arr1;              // The index starts from the beginning of the first Matrix
+    int* p2 = arr2 + SIZE - 1;   // The index starts from the beginning of the second Matrix
+
+    while (p1 < arr1 + SIZE) {
+        *p2 = *p1;  // Copy from start to finish
+        p1++;
+        p2--;
+    }
+
+    // Display the result after reverse copying by the method 
+    for (int* p = arr2; p < arr2 + SIZE; p++) {
+        cout << *p << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+#### **Задача 7: Многоуровневая структура данных (Вложенные структуры, массивы)**
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Date {
+    int day;
+    int month;
+    int year;
+};
+
+struct Student {
+    string fullName;
+    Date birthDate;
+    int grades[5];
+};
+
+void printStudent(const Student& s) {
+    cout << "fullName: " << s.fullName << endl;
+    cout << "birthDate: " << s.birthDate.day << "."
+        << s.birthDate.month << "." << s.birthDate.year << endl;
+    cout << "grades: ";
+    for (int i = 0; i < 5; i++) {
+        cout << s.grades[i] << " ";
+    }
+    cout << endl;
+}
+
+double getAverageRating(const Student& s) {
+    int sum = 0;
+    for (int i = 0; i < 5; i++) {
+        sum += s.grades[i];
+    }
+    return static_cast<double>(sum) / 5.0;
+}
+
+int main() {
+    const int NUM_STUDENTS = 4;
+    Student students[NUM_STUDENTS] = {
+        {"Иванов Иван Иванович", {15, 3, 2002}, {5, 4, 5, 4, 5}},
+        {"Петрова Анна Сергеевна", {22, 7, 2003}, {4, 4, 3, 4, 4}},
+        {"Сидоров Алексей Петрович", {10, 11, 2001}, {5, 5, 5, 5, 5}},
+        {"Козлова Мария Дмитриевна", {5, 1, 2002}, {3, 4, 3, 4, 3}}
+    };
+
+    cout << "Students with an average score above 4.0:" << endl;
+    for (int i = 0; i < NUM_STUDENTS; i++) {
+        double average = getAverageRating(students[i]);
+        if (average > 4.0) {
+            printStudent(students[i]);
+            cout << "Average score: " << average << endl;
+            
+        }
+    }
+
+    return 0;
+}
+
+
+#### **Задача 8: Функция-утилита для массива (Указатели и размер)**
+
+
+#include <iostream>
+using namespace std;
+
+void arrayInfo(int* arr, int size) {
+    cout << "Matrix size: " << size << endl;
+
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += arr[i];
+    }
+    cout << "Total elements: " << sum << endl;
+
+    cout << "The first element: " << arr[0] << endl;
+    cout << "The last element: " << arr[size - 1] << endl;
+}
+
+int main() {
+    int arr1[] = { 1, 2, 3, 4, 5 };
+    int arr2[] = { 10, 20, 30 };
+
+    cout << "Matrix 1:" << endl;
+    arrayInfo(arr1, 5);
+    cout << endl;
+
+    cout << "Matrix 2:" << endl;
+    arrayInfo(arr2, 3);
+
+    return 0;
+}
+
+
+#### **Задача 9: Модификация данных через ссылки и указатели (Ссылки, указатели)**
+
+
+#include <iostream>
+using namespace std;
+
+struct Account {
+    int accountNumber;
+    double balance;
+};
+
+void deposit(Account* acc, double amount) {
+    acc->balance += amount;
+    cout << "The deposit was made " << amount << " In the account " << acc->accountNumber << endl;
+}
+
+void withdraw(Account& acc, double amount) {
+    if (acc.balance >= amount) {
+        acc.balance -= amount;
+        cout << "Withdrawn " << amount << " From the account " << acc.accountNumber << endl;
+    }
+    else {
+        cout << "Insufficient account balance " << acc.accountNumber << " To withdraw an amount " << amount << endl;
+    }
+}
+
+int main() {
+    Account myAccount = { 12345, 1000.0 };
+
+    cout << "Elementary arithmetic:" << endl;
+    cout << "Account number: " << myAccount.accountNumber << endl;
+    cout << "Balance: " << myAccount.balance << endl << endl;
+
+    deposit(&myAccount, 500.0);
+    cout << "Balance after Deposit: " << myAccount.balance << endl << endl;
+
+    withdraw(myAccount, 200.0);
+    cout << "Balance after withdrawal: " << myAccount.balance << endl << endl;
+
+    withdraw(myAccount, 2000.0);
+    cout << "The balance after the withdrawal attempt: " << myAccount.balance << endl;
+
+    return 0;
+}
+
+
+
+#### **Задача 10: Поиск и сортировка в массиве структур (Сложные типы данных, алгоритмы)**
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+struct Book {
+    string title;    
+    string author;   
+    int year;        
+    double price;    
+};
+
+
+void sortBooksByYear(Book* books, int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (books[j].year > books[j + 1].year) {
+                Book temp = books[j];            
+                books[j] = books[j + 1];        
+                books[j + 1] = temp;           
+            }
+        }
+    }
+}
+
+Book* findBookByAuthor(Book* books, int size, const string& author) {
+    
+    for (int i = 0; i < size; i++) {
+        if (books[i].author == author) {
+            // Return address of the found book
+            return &books[i];
+        }
+    }
+    
+    return nullptr;
+}
+
+// Function to print all books in the array
+
+void printBooks(Book* books, int size) {
+    
+    for (int i = 0; i < size; i++) {
+        
+        cout << "Book " << i + 1 << ":" << endl;
+        cout << "  Title: " << books[i].title << endl;
+        cout << "  Author: " << books[i].author << endl;
+        cout << "  Year: " << books[i].year << endl;
+        cout << "  Price: " << books[i].price << endl;
+
+    }
+}
+
+int main() {
+    // Define constant for array size 
+    const int size = 5;
+
+    // Dynamically allocate memory for array of books and initialize with data
+    Book* books = new Book[size]{
+        {"C++ Programming", "Ahmed Mohamed", 2022, 45.5},
+        {"Data Structures", "Sara Khalid", 2020, 60.0},
+        {"Algorithms", "Ali Hassan", 2023, 55.75},
+        {"Database Systems", "Sara Khalid", 2021, 70.25},
+        {"Computer Networks", "Mohamed Ali", 2019, 40.0}
+    };
+
+    // Display books before sorting
+    cout << "=== Books Before Sorting ===" << endl;
+    printBooks(books, size);
+
+    // Sort books by publication year
+    sortBooksByYear(books, size);
+
+    // Display books after sorting
+    cout << "\n=== Books After Sorting by Year ===" << endl;
+    printBooks(books, size);
+
+    // Search for books by author - First search (author exists)
+    string authorToFind = "Sara Khalid";
+    Book* foundBook = findBookByAuthor(books, size, authorToFind);
+
+    cout << "\n=== Search for Author: " << authorToFind << " ===" << endl;
+    // Check if book was found
+    if (foundBook != nullptr) {
+        cout << "Book Found:" << endl;
+        cout << "  Title: " << foundBook->title << endl;
+        cout << "  Author: " << foundBook->author << endl;
+        cout << "  Year: " << foundBook->year << endl;
+        cout << "  Price: " << foundBook->price << endl;
+    }
+    else {
+        cout << "No books found for this author." << endl;
+    }
+
+    // Search for books by author 
+    authorToFind = "Fatima Ahmed";
+    foundBook = findBookByAuthor(books, size, authorToFind);
+
+    cout << "\n=== Search for Author: " << authorToFind << " ===" << endl;
+    // Check if book was found
+    if (foundBook != nullptr) {
+        cout << "Book Found:" << endl;
+        cout << "  Title: " << foundBook->title << endl;
+        cout << "  Author: " << foundBook->author << endl;
+        cout << "  Year: " << foundBook->year << endl;
+        cout << "  Price: " << foundBook->price << endl;
+    }
+    else {
+        cout << "No books found for this author." << endl;
+    }
+
+  
+    delete[] books;
+
+    return 0;
+}
