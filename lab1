@@ -1,0 +1,117 @@
+#include <iostream>
+#include <cmath>
+#include <windows.h>
+#include <limits>
+#include <string>
+#include <algorithm> // لعكس النص
+using namespace std;
+// تحويل من ثنائي إلى عشري
+int binaryToDecimal(const string& binary) {
+    int decimalValue = 0;
+    for (char bit : binary) {
+        decimalValue = decimalValue * 2 + (bit - '0');
+    }
+    return decimalValue;
+}
+
+// تحويل من عشري إلى ثنائي
+string decimalToBinary(int decimal) {
+    if (decimal == 0) return "0";
+    string binary = "";
+    while (decimal > 0) {
+        binary += (decimal % 2) + '0';
+        decimal /= 2;
+    }
+    reverse(binary.begin(), binary.end());
+    return binary;
+}
+
+
+int main() {
+    setlocale(LC_ALL, "ar_AR.UTF-8");
+
+    int x = 0;
+    int y = 0;
+    double R = 0;
+    char sgn = { };
+    int n = 0;
+
+    std::cout << "الاشارة: [+],[-],[*],[-],[^],[#]," << std::endl;
+    std::cin >> sgn;
+    std::cin.ignore();
+
+
+    switch (sgn) {
+    case '+':
+        std::cout << "ادخل قيمة  x" << std::endl;
+        std::cin >> x;
+        std::cout << "ادخل قيمة y" << std::endl;
+        std::cin >> y;
+
+        R = x + y;
+        std::cout << "ناتج الجمع: " << R << std::endl;
+        break;
+
+    case '-':
+        std::cout << "ادخل قيمة x" << std::endl;
+        std::cin >> x;
+        std::cout << "ادخل قيمة y" << std::endl;
+        std::cin >> y;
+
+        R = x - y;
+        std::cout << "ناتج الطرح: " << R << std::endl;
+        break;
+
+    case '*':
+        std::cout << "ادخل قيمة x" << std::endl;
+        std::cin >> x;
+        std::cout << "ادخل قيمة y" << std::endl;
+        std::cin >> y;
+
+        R = x * y;
+        std::cout << "ناتج الضرب  : " << R << std::endl;
+        break;
+
+    case '/':
+        std::cout << "ادخل قيمة  x" << std::endl;
+        std::cin >> x;
+        std::cout << "ادخل قيمة y" << std::endl;
+        std::cin >> y;
+
+        R = x / y;
+        std::cout << "ناتج القسمة: " << R << std::endl;
+        break;
+
+    case '^':
+        std::cout << "ادخل قيمة x" << std::endl;
+        std::cin >> x;
+        std::cout << "ادخل قيمة" << std::endl;
+        std::cin >> y;
+
+        R = std::pow(x, y);;
+        std::cout << "مرفوع للاس : " << R << std::endl;
+        break;
+
+    case  '#':
+        std::cout << "ادخل قيمة x " << std::endl;
+        std::cin >> x;
+        double R = sqrt(x);
+        std::cout << "sqrt:" << R << std::endl;
+
+        break;
+
+    }
+    string binaryNumber;
+    int decimalNumber;
+
+    // من ثنائي إلى عشري
+    cout << "أدخل رقمًا ثنائيًا: ";
+    cin >> binaryNumber;
+    cout << "الرقم العشري: " << binaryToDecimal(binaryNumber) << endl;
+
+    // من عشري إلى ثنائي
+    cout << "أدخل رقمًا عشريًا: ";
+    cin >> decimalNumber;
+    cout << "الرقم الثنائي: " << decimalToBinary(decimalNumber) << endl;
+
+}
