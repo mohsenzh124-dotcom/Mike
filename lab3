@@ -1,0 +1,901 @@
+## Задача 1: Базовый класс "Студент"
+
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Person {
+protected:
+    string name;
+    int age;
+    string address;
+
+public:
+    Person(string n, int a, string addr) : name(n), age(a), address(addr) {}
+    virtual void displayInfo() const {
+        cout << "Имя: " << name << ", Возраст: " << age << ", Адрес: " << address;
+    }
+    virtual ~Person() {}
+};
+
+class Student : public Person {
+private:
+    string studentId;
+    double averageGrade;
+    int grades[5];
+
+    void recalcAverage() {
+        double s = 0;
+        for (int i = 0; i < 5; ++i) s += grades[i];
+        averageGrade = s / 5.0;
+    }
+
+public:
+    Student(string n, int a, string addr, string id, double avg = 0.0)
+        : Person(n, a, addr), studentId(id), averageGrade(avg) {
+        for (int i = 0; i < 5; ++i) grades[i] = 0;
+    }
+
+    void setGrade(int idx, int value) {
+        if (idx < 0  idx >= 5) {
+            cerr << "Ошибка: некорректный индекс оценки\n";
+            return;
+        }
+        if (value < 1  value > 5) {
+            cerr << "Ошибка: оценка должна быть 1..5\n";
+            return;
+        }
+        grades[idx] = value;
+        recalcAverage();
+    }
+
+    double getAverage() const { return averageGrade; }
+    string getStudentId() const { return studentId; }
+
+    void displayInfo() const override {
+        Person::displayInfo();
+        cout << ", ID: " << studentId << ", Средний балл: " << averageGrade << "\n";
+        cout << "Оценки: ";
+        for (int i = 0; i < 5; ++i) cout << grades[i] << (i+1<5?" ":"\n");
+    }
+};
+
+class Professor : public Person {
+private:
+    string department;
+    double salary;
+    int yearsOfExperience;
+
+public:
+    Professor(string n, int a, string addr, string dept, double sal, int yrs)
+        : Person(n, a, addr), department(dept), salary(sal), yearsOfExperience(yrs) {}
+
+    double calcExperienceBonus() const {
+        // бонус 1% от зарплаты за каждый год опыта, ограничим 50%
+        double pct = 0.01 * yearsOfExperience;
+        if (pct > 0.5) pct = 0.5;
+        return salary * pct;
+    }
+
+    void displayInfo() const override {
+        Person::displayInfo();
+        cout << ", Кафедра: " << department << ", Зарплата: " << salary
+             << ", Стаж: " << yearsOfExperience << " лет"
+             << ", Бонус за стаж: " << calcExperienceBonus() << "\n";
+    }
+};
+
+int main() {
+    Student student("Петр Петров", 20, "ул. Студенческая, 15", "S12345", 4.3);
+    student.setGrade(0,5);
+    student.setGrade(1,4);
+    student.setGrade(2,5);
+    student.setGrade(3,3);
+    student.setGrade(4,4);
+
+    Professor prof("Доктор Иванов", 45, "ул. Академическая, 10", "Компьютерные науки", 50000, 15);
+
+    cout << "=== Студент ===\n";
+    student.displayInfo();
+    cout << "\n=== Профессор ===\n";
+    prof.displayInfo();
+
+    return 0;
+}
+
+
+##Задача 2: Наследование - Академические работники
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Person {
+protected:
+    string name;
+    int age;
+    string address;
+
+public:
+    Person(string n, int a, string addr) : name(n), age(a), address(addr) {}
+    virtual void displayInfo() const {
+        cout << "name: " << name << ", age: " << age << ", address: " << address;
+    }
+    virtual ~Person() {}
+};
+
+class Student : public Person {
+private:
+    string studentId;
+    double averageGrade;
+    int grades[5];
+
+    void recalcAverage() {
+        double s = 0;
+        for (int i = 0; i < 5; ++i) s += grades[i];
+        averageGrade = s / 5.0;
+    }
+
+public:
+    Student(string n, int a, string addr, string id, double avg = 0.0)
+        : Person(n, a, addr), studentId(id), averageGrade(avg) {
+        for (int i = 0; i < 5; ++i) grades[i] = 0;
+    }
+
+void setGrade(int idx, int value) {
+        if (idx < 0  idx >= 5) {
+            cerr << "Error: Incorrect grade index\n";
+            return;
+        }
+        if (value < 1  value > 5) {
+            cerr << "Error: the grade must be between 1 and5\n";
+            return;
+        }
+        grades[idx] = value;
+        recalcAverage();
+    }
+
+    double getAverage() const { return averageGrade; }
+    string getStudentId() const { return studentId; }
+
+    void displayInfo() const override {
+        Person::displayInfo();
+        cout << ", ID: " << studentId << ", Moyenne: " << averageGrade << "\n";
+        cout << "Notes: ";
+        for (int i = 0; i < 5; ++i) cout << grades[i] << (i+1<5?" ":"\n");
+    }
+};
+
+class Professor : public Person {
+private:
+    string department;
+    double salary;
+    int yearsOfExperience;
+
+public:
+    Professor(string n, int a, string addr, string dept, double sal, int yrs)
+        : Person(n, a, addr), department(dept), salary(sal), yearsOfExperience(yrs) {}
+
+    double calcExperienceBonus() const {
+        double pct = 0.01 * yearsOfExperience;
+        if (pct > 0.5) pct = 0.5; // max 50%
+        return salary * pct;
+    }
+
+    void displayInfo() const override {
+        Person::displayInfo();
+        cout << ", Department: " << department << ", Salaire: " << salary
+             << ", Experience: " << yearsOfExperience << " ans"
+             << ", Experience bonus: " << calcExperienceBonus() << "\n";
+    }
+};
+
+int main() {
+    Student etu("Pierre Dupont", 20, "15 student Street", "S12345", 4.3);
+    etu.setGrade(0,5);
+    etu.setGrade(1,4);
+    etu.setGrade(2,5);
+    etu.setGrade(3,3);
+    etu.setGrade(4,4);
+
+    Professor prof("Dr. Ivanov", 45, "10 academic Street", "Computer Science", 50000, 15);
+
+    cout << "=== Student ===\n";
+    etu.displayInfo();
+    cout << "\n=== Professor ===\n";
+    prof.displayInfo();
+
+    return 0;
+}
+
+
+
+
+
+###Задача 3: Полиморфизм - Геометрические фигуры
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+using namespace std;
+
+#ifndef M_PI
+const double MY_PI = 3.14159265358979323846;
+#else
+const double MY_PI = M_PI;
+#endif
+
+class Shape {
+protected:
+    string color;
+    string name;
+
+public:
+    Shape(string n, string c) : name(n), color(c) {}
+    virtual ~Shape() {}
+
+    virtual double calculateArea() const = 0;
+    virtual double calculatePerimeter() const = 0;
+    virtual void draw() const = 0;
+
+    virtual void displayInfo() const {
+        cout << "Фигура: " << name << ", Цвет: " << color << endl;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(string c, double r) : Shape("Круг", c), radius(r) {}
+
+    double calculateArea() const override {
+        return MY_PI * radius * radius;
+    }
+    double calculatePerimeter() const override {
+        return 2 * MY_PI * radius;
+    }
+    void draw() const override {
+        cout << "  (рисую круг радиуса " << radius << ")\n";
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+public:
+    Rectangle(string c, double w, double h) : Shape("Прямоугольник", c), width(w), height(h) {}
+
+    double calculateArea() const override {
+        return width * height;
+    }
+    double calculatePerimeter() const override {
+        return 2 * (width + height);
+    }
+    void draw() const override {
+        cout << "  (рисую прямоугольник " << width << "x" << height << ")\n";
+    }
+};
+
+class Triangle : public Shape {
+private:
+    double a, b, c;
+public:
+    Triangle(string col, double a_, double b_, double c_) : Shape("Треугольник", col), a(a_), b(b_), c(c_) {}
+
+    double calculatePerimeter() const override {
+        return a + b + c;
+    }
+    double calculateArea() const override {
+        double p = calculatePerimeter() / 2.0;
+        double area = sqrt(max(0.0, p * (p - a) * (p - b) * (p - c)));
+        return area;
+    }
+    void draw() const override {
+        cout << "  (рисую треугольник со сторонами " << a << ", " << b << ", " << c << ")\n";
+    }
+};
+
+int main() {
+    vector<Shape*> shapes;
+    shapes.push_back(new Circle("Красный", 5.0));
+    shapes.push_back(new Rectangle("Синий", 4.0, 6.0));
+    shapes.push_back(new Triangle("Зеленый", 3.0, 4.0, 5.0));
+
+    for (const auto s : shapes) {
+        s->displayInfo();
+        cout << "Площадь: " << s->calculateArea() << ", Периметр: " << s->calculatePerimeter() << endl;
+        s->draw();
+        cout << "--------------------------\n";
+    }
+
+    for (auto s : shapes) delete s;
+    return 0;
+}
+
+##Задача 4: Абстрактный класс "Транспортное средство"
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Vehicle {
+protected:
+    string brand;
+    string model;
+    int year;
+    double fuelLevel; // процент 0..100
+
+public:
+    Vehicle(string b, string m, int y) : brand(b), model(m), year(y), fuelLevel(100.0) {}
+    virtual ~Vehicle() {}
+
+    virtual void startEngine() = 0;
+    virtual void stopEngine() = 0;
+    virtual void refuel(double amount) = 0;
+
+    virtual void displayInfo() const {
+        cout << brand << " " << model << " (" << year << ")\n";
+        cout << "Уровень топлива: " << fuelLevel << "%\n";
+    }
+
+    double getFuelLevel() const { return fuelLevel; }
+    void setFuelLevel(double level) {
+        if (level < 0) level = 0;
+        if (level > 100) level = 100;
+        fuelLevel = level;
+    }
+};
+
+class Car : public Vehicle {
+private:
+    int doors;
+    string transmission;
+    bool engineOn;
+public:
+    Car(string b, string m, int y, int d, string trans)
+        : Vehicle(b,m,y), doors(d), transmission(trans), engineOn(false) {}
+
+    void startEngine() override {
+        if (!engineOn) {
+            engineOn = true;
+            cout << brand << " " << model << " двигатель запущен\n";
+        } else cout << "Двигатель уже запущен\n";
+    }
+
+    void stopEngine() override {
+        if (engineOn) {
+            engineOn = false;
+            cout << brand << " " << model << " двигатель остановлен\n";
+        } else cout << "Двигатель уже остановлен\n";
+    }
+
+    void refuel(double amount) override {
+        setFuelLevel(fuelLevel + amount);
+        cout << brand << " " << model << " заправлен на " << amount << "%. Текущий уровень: " << fuelLevel << "%\n";
+    }
+
+    void displayInfo() const override {
+        Vehicle::displayInfo();
+        cout << "Двери: " << doors << ", Коробка: " << transmission << "\n";
+    }
+};
+
+class Motorcycle : public Vehicle {
+private:
+    bool hasFairing;
+    bool engineOn;
+
+public:
+    Motorcycle(string b, string m, int y, bool fairing)
+        : Vehicle(b,m,y), hasFairing(fairing), engineOn(false) {}
+
+    void startEngine() override {
+        if (!engineOn) {
+            engineOn = true;
+            cout << brand << " " << model << " мотор запущен\n";
+        } else cout << "Мотор уже запущен\n";
+    }
+
+    void stopEngine() override {
+        if (engineOn) {
+            engineOn = false;
+            cout << brand << " " << model << " мотор остановлен\n";
+        } else cout << "Мотор уже остановлен\n";
+    }
+
+    void refuel(double amount) override {
+        setFuelLevel(fuelLevel + amount);
+        cout << brand << " " << model << " заправлен на " << amount << "%. Текущий уровень: " << fuelLevel << "%\n";
+    }
+
+    void wheelie() {
+        cout << brand << " " << model << " делает вилли!\n";
+    }
+
+    void displayInfo() const override {
+        Vehicle::displayInfo();
+        cout << "Обтекатель: " << (hasFairing ? "есть" : "нет") << "\n";
+    }
+};
+
+int main() {
+    vector<Vehicle*> fleet;
+    fleet.push_back(new Car("Toyota", "Camry", 2020, 4, "Automatic"));
+    fleet.push_back(new Motorcycle("Yamaha", "MT-07", 2019, false));
+
+    for (auto v : fleet) {
+        v->displayInfo();
+        v->refuel(-20); // уменьшим уровень топлива на 20% (в примере можно и >0)
+        v->displayInfo();
+        cout << "----\n";
+    }
+
+    // Уникальная функциональность мотоцикла
+    Motorcycle* m = dynamic_cast<Motorcycle*>(fleet[1]);
+    if (m) { m->startEngine(); m->wheelie(); m->stopEngine(); }
+
+    for (auto v : fleet) delete v;
+    return 0;
+}
+
+
+
+###Задача 5: Композиция - Библиотека и Книги
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Book {
+private:
+    string title;
+    string author;
+    string isbn;
+    int year;
+    bool isAvailable;
+
+public:
+    Book(const string& t, const string& a, const string& i, int y)
+        : title(t), author(a), isbn(i), year(y), isAvailable(true) {}
+
+// Геттеры
+    string getTitle() const { return title; }
+    string getAuthor() const { return author; }
+    string getIsbn() const { return isbn; }
+    int getYear() const { return year; }
+    bool available() const { return isAvailable; }
+
+    // Сеттеры
+    void setTitle(const string& t) { title = t; }
+    void setAuthor(const string& a) { author = a; }
+    void setIsbn(const string& i) { isbn = i; }
+    void setYear(int y) { year = y; }
+
+    // Методы управления доступностью
+    bool borrow() {
+        if (!isAvailable) return false;
+        isAvailable = false;
+        return true;
+    }
+
+    bool returnBook() {
+        if (isAvailable) return false;
+        isAvailable = true;
+        return true;
+    }
+
+    void displayInfo() const {
+        cout << "Название: " << title << " | Автор: " << author
+             << " | ISBN: " << isbn << " | Год: " << year
+             << " | " << (isAvailable ? "Доступна" : "Занята") << endl;
+    }
+};
+
+class Library {
+private:
+    string name;
+    string address;
+    vector<Book> books;
+
+public:
+    Library(const string& n, const string& addr) : name(n), address(addr) {}
+
+    void addBook(const Book& book) {
+        // Не добавляем дубликат ISBN
+        auto it = find_if(books.begin(), books.end(),
+                          [&](const Book& b){ return b.getIsbn() == book.getIsbn(); });
+        if (it == books.end()) {
+            books.push_back(book);
+        } else {
+            cerr << "Книга с ISBN " << book.getIsbn() << " уже существует — пропуск.\n";
+        }
+    }
+
+    bool removeBook(const string& isbn) {
+        auto it = remove_if(books.begin(), books.end(),
+                            [&](const Book& b){ return b.getIsbn() == isbn; });
+        if (it != books.end()) {
+            books.erase(it, books.end());
+            return true;
+        }
+        return false;
+    }
+
+    // Возвращает указатель на книгу внутри вектора или nullptr
+    Book* findBookByTitle(const string& title) {
+        auto it = find_if(books.begin(), books.end(),
+                          [&](Book& b){ return b.getTitle() == title; });
+        return (it != books.end()) ? &(*it) : nullptr;
+    }
+
+    Book* findBookByIsbn(const string& isbn) {
+        auto it = find_if(books.begin(), books.end(),
+                          [&](Book& b){ return b.getIsbn() == isbn; });
+        return (it != books.end()) ? &(*it) : nullptr;
+    }
+
+    bool borrowBook(const string& isbn) {
+        Book* b = findBookByIsbn(isbn);
+        if (!b) {
+            cerr << "Книга с ISBN " << isbn << " не найдена.\n";
+            return false;
+        }
+        if (!b->borrow()) {
+            cerr << "Книга \"" << b->getTitle() << "\" сейчас недоступна.\n";
+            return false;
+        }
+        cout << "Книга \"" << b->getTitle() << "\" выдана.\n";
+        return true;
+    }
+
+    bool returnBook(const string& isbn) {
+        Book* b = findBookByIsbn(isbn);
+        if (!b) {
+            cerr << "Книга с ISBN " << isbn << " не найдена.\n";
+            return false;
+        }
+        if (!b->returnBook()) {
+            cerr << "Книга \"" << b->getTitle() << "\" уже была отмечена как доступная.\n";
+            return false;
+        }
+        cout << "Книга \"" << b->getTitle() << "\" возвращена.\n";
+        return true;
+    }
+
+    void displayAllBooks() const {
+        cout << "Библиотека: " << name << " (" << address << ") — все книги:\n";
+        for (const auto& b : books) b.displayInfo();
+    }
+
+    void displayAvailableBooks() const {
+        cout << "Доступные книги:\n";
+        for (const auto& b : books) if (b.available()) b.displayInfo();
+    }
+};
+
+int main() {
+    Library lib("Городская библиотека", "ул. Центральная, 1");
+
+    lib.addBook(Book("Преступление и наказание", "Ф. Достоевский", "978-5-01-000000-1", 1866));
+    lib.addBook(Book("Война и мир", "Л. Толстой", "978-5-01-000000-2", 1869));
+    lib.addBook(Book("Мастер и Маргарита", "М. Булгаков", "978-5-01-000000-3", 1967));
+
+    lib.displayAllBooks();
+    cout << endl;
+
+// Выдача книги
+    lib.borrowBook("978-5-01-000000-2"); // Война и мир
+    cout << endl;
+
+    lib.displayAvailableBooks();
+    cout << endl;
+
+    // Попытка повторной выдачи той же книги
+    lib.borrowBook("978-5-01-000000-2");
+    cout << endl;
+
+    // Возврат
+    lib.returnBook("978-5-01-000000-2");
+    cout << endl;
+
+    lib.displayAllBooks();
+
+    // Удаление
+    lib.removeBook("978-5-01-000000-1");
+    cout << "\nПосле удаления:\n";
+    lib.displayAllBooks();
+
+    return 0;
+}
+
+
+###Задача 6: Статические члены и константы
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    string accountNumber;
+    string ownerName;
+    double balance;
+    static int totalAccounts;           // Общее количество счетов
+    static double totalBankBalance;     // Общий баланс банка
+    const double MIN_BALANCE = 10.0;    // Минимальный баланс
+
+public:
+    BankAccount(const string& accNum, const string& owner, double initial)
+        : accountNumber(accNum), ownerName(owner), balance(initial) {
+        if (balance < MIN_BALANCE) {
+            cout << "Начальный баланс меньше минимального, установлен " << MIN_BALANCE << endl;
+            balance = MIN_BALANCE;
+        }
+        totalAccounts++;
+        totalBankBalance += balance;
+    }
+
+    ~BankAccount() {
+        totalAccounts--;
+        totalBankBalance -= balance;
+    }
+
+    void deposit(double amount) {
+        if (amount <= 0) {
+            cout << "Нельзя внести отрицательную сумму!\n";
+            return;
+        }
+        balance += amount;
+        totalBankBalance += amount;
+    }
+
+    void withdraw(double amount) {
+        if (amount <= 0) {
+            cout << "Некорректная сумма!\n";
+            return;
+        }
+        if (balance - amount < MIN_BALANCE) {
+            cout << "Нельзя снять: минимальный баланс должен быть " << MIN_BALANCE << endl;
+            return;
+        }
+        balance -= amount;
+        totalBankBalance -= amount;
+    }
+
+    void displayAccountInfo() const {
+        cout << "Счет №" << accountNumber << " | Владелец: " << ownerName
+             << " | Баланс: " << balance << endl;
+    }
+
+    // Статические методы
+    static int getTotalAccounts() { return totalAccounts; }
+    static double getTotalBankBalance() { return totalBankBalance; }
+    static double getAverageBalance() {
+        if (totalAccounts == 0) return 0.0;
+        return totalBankBalance / totalAccounts;
+    }
+};
+
+// Инициализация статических переменных
+int BankAccount::totalAccounts = 0;
+double BankAccount::totalBankBalance = 0.0;
+
+int main() {
+    cout << "=== Создание счетов ===\n";
+    BankAccount acc1("001", "Иван Иванов", 1000);
+    BankAccount acc2("002", "Петр Петров", 200);
+    BankAccount acc3("003", "Мария Сидорова", 50);
+
+    acc1.displayAccountInfo();
+    acc2.displayAccountInfo();
+    acc3.displayAccountInfo();
+
+    cout << "\nВсего счетов: " << BankAccount::getTotalAccounts() << endl;
+    cout << "Общий баланс банка: " << BankAccount::getTotalBankBalance() << endl;
+    cout << "Средний баланс: " << BankAccount::getAverageBalance() << endl;
+
+    cout << "\n=== Операции по счетам ===\n";
+    acc1.deposit(500);
+    acc2.withdraw(100);
+    acc3.withdraw(80); // Ошибка — ниже MIN_BALANCE
+
+    cout << "\nПосле операций:\n";
+    acc1.displayAccountInfo();
+    acc2.displayAccountInfo();
+    acc3.displayAccountInfo();
+
+    cout << "\nВсего счетов: " << BankAccount::getTotalAccounts() << endl;
+    cout << "Общий баланс банка: " << BankAccount::getTotalBankBalance() << endl;
+    cout << "Средний баланс: " << BankAccount::getAverageBalance() << endl;
+
+    cout << "\n=== Конец программы ===\n";
+    return 0;
+}
+####Задача 7: Дружественные функции и операторы
+#include <iostream>
+using namespace std;
+
+class Vector2D {
+private:
+    double x, y;
+
+public:
+    Vector2D(double x = 0, double y = 0) : x(x), y(y) {}
+
+    // Дружественные функции для операторов
+    friend Vector2D operator+(const Vector2D& a, const Vector2D& b);
+    friend Vector2D operator-(const Vector2D& a, const Vector2D& b);
+    friend ostream& operator<<(ostream& os, const Vector2D& v);
+    friend istream& operator>>(istream& is, Vector2D& v);
+};
+
+Vector2D operator+(const Vector2D& a, const Vector2D& b) {
+    return Vector2D(a.x + b.x, a.y + b.y);
+}
+
+Vector2D operator-(const Vector2D& a, const Vector2D& b) {
+    return Vector2D(a.x - b.x, a.y - b.y);
+}
+
+ostream& operator<<(ostream& os, const Vector2D& v) {
+    os << "(" << v.x << ", " << v.y << ")";
+    return os;
+}
+
+istream& operator>>(istream& is, Vector2D& v) {
+    cout << "Введите x и y: ";
+    is >> v.x >> v.y;
+    return is;
+}
+
+int main() {
+    Vector2D v1, v2;
+    cin >> v1;
+    cin >> v2;
+
+    Vector2D sum = v1 + v2;
+    Vector2D diff = v1 - v2;
+
+    cout << "Сумма: " << sum << endl;
+    cout << "Разность: " << diff << endl;
+
+    return 0;
+}
+
+
+###Задача 8: Множественное наследование
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Person {
+protected:
+    string name;
+    int age;
+public:
+    Person(string n, int a) : name(n), age(a) {}
+    void displayInfo() const {
+        cout << "Имя: " << name << ", Возраст: " << age << endl;
+    }
+};
+
+class Student : public Person {
+private:
+    string university;
+public:
+    Student(string n, int a, string u) : Person(n, a), university(u) {}
+    void displayInfo() const {
+        Person::displayInfo();
+        cout << "Университет: " << university << endl;
+    }
+};
+
+int main() {
+    Student s("Иван Иванов", 20, "МГУ");
+    s.displayInfo();
+    return 0;
+}
+
+
+
+####Задача 9: Шаблоны классов
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Animal {
+public:
+    virtual void speak() const {
+        cout << "Животное издает звук" << endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void speak() const override {
+        cout << "Собака лает: Гав-гав!" << endl;
+    }
+};
+
+class Cat : public Animal {
+public:
+    void speak() const override {
+        cout << "Кошка мяукает: Мяу!" << endl;
+    }
+};
+
+int main() {
+    Animal* a1 = new Dog();
+    Animal* a2 = new Cat();
+    a1->speak();
+    a2->speak();
+
+    delete a1;
+    delete a2;
+    return 0;
+}
+
+###Задача 10: Полная система с использованием всех принципов ООП
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Shape {
+public:
+    virtual double area() const = 0; // Чисто виртуальная функция
+    virtual void display() const = 0;
+    virtual ~Shape() {}
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+    double area() const override { return width * height; }
+    void display() const override {
+        cout << "Прямоугольник: ширина=" << width << ", высота=" << height
+             << ", площадь=" << area() << endl;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+    double area() const override { return 3.14159 * radius * radius; }
+    void display() const override {
+        cout << "Круг: радиус=" << radius << ", площадь=" << area() << endl;
+    }
+};
+
+int main() {
+    Shape* s1 = new Rectangle(4, 5);
+    Shape* s2 = new Circle(3);
+
+    s1->display();
+    s2->display();
+
+    delete s1;
+    delete s2;
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
