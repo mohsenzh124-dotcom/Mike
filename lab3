@@ -14,7 +14,7 @@ protected:
 public:
     Person(string n, int a, string addr) : name(n), age(a), address(addr) {}
     virtual void displayInfo() const {
-        cout << "Имя: " << name << ", Возраст: " << age << ", Адрес: " << address;
+        cout << "Name: " << name << ", Age: " << age << ", Address: " << address;
     }
     virtual ~Person() {}
 };
@@ -38,12 +38,12 @@ public:
     }
 
     void setGrade(int idx, int value) {
-        if (idx < 0  idx >= 5) {
-            cerr << "Ошибка: некорректный индекс оценки\n";
+        if (idx < 0 || idx >= 5) {
+            cerr << "Error: Invalid grade index\n";
             return;
         }
-        if (value < 1  value > 5) {
-            cerr << "Ошибка: оценка должна быть 1..5\n";
+        if (value < 1 || value > 5) {
+            cerr << "Error: Grade must be between 1 and 5\n";
             return;
         }
         grades[idx] = value;
@@ -55,9 +55,9 @@ public:
 
     void displayInfo() const override {
         Person::displayInfo();
-        cout << ", ID: " << studentId << ", Средний балл: " << averageGrade << "\n";
-        cout << "Оценки: ";
-        for (int i = 0; i < 5; ++i) cout << grades[i] << (i+1<5?" ":"\n");
+        cout << ", Student ID: " << studentId << ", Average Grade: " << averageGrade << "\n";
+        cout << "Grades: ";
+        for (int i = 0; i < 5; ++i) cout << grades[i] << (i + 1 < 5 ? " " : "\n");
     }
 };
 
@@ -69,10 +69,11 @@ private:
 
 public:
     Professor(string n, int a, string addr, string dept, double sal, int yrs)
-        : Person(n, a, addr), department(dept), salary(sal), yearsOfExperience(yrs) {}
+        : Person(n, a, addr), department(dept), salary(sal), yearsOfExperience(yrs) {
+    }
 
     double calcExperienceBonus() const {
-        // бонус 1% от зарплаты за каждый год опыта, ограничим 50%
+        // Experience bonus: 1% of salary per year of experience, capped at 50%
         double pct = 0.01 * yearsOfExperience;
         if (pct > 0.5) pct = 0.5;
         return salary * pct;
@@ -80,25 +81,25 @@ public:
 
     void displayInfo() const override {
         Person::displayInfo();
-        cout << ", Кафедра: " << department << ", Зарплата: " << salary
-             << ", Стаж: " << yearsOfExperience << " лет"
-             << ", Бонус за стаж: " << calcExperienceBonus() << "\n";
+        cout << ", Department: " << department << ", Salary: " << salary
+            << ", Experience: " << yearsOfExperience << " years"
+            << ", Experience Bonus: " << calcExperienceBonus() << "\n";
     }
 };
 
 int main() {
-    Student student("Петр Петров", 20, "ул. Студенческая, 15", "S12345", 4.3);
-    student.setGrade(0,5);
-    student.setGrade(1,4);
-    student.setGrade(2,5);
-    student.setGrade(3,3);
-    student.setGrade(4,4);
+    Student student("Peter Petrov", 20, "Student Street, 15", "S12345", 4.3);
+    student.setGrade(0, 5);
+    student.setGrade(1, 4);
+    student.setGrade(2, 5);
+    student.setGrade(3, 3);
+    student.setGrade(4, 4);
 
-    Professor prof("Доктор Иванов", 45, "ул. Академическая, 10", "Компьютерные науки", 50000, 15);
+    Professor prof("Dr. Ivanov", 45, "Academic Street, 10", "Computer Science", 50000, 15);
 
-    cout << "=== Студент ===\n";
+    cout << "=== Student ===\n";
     student.displayInfo();
-    cout << "\n=== Профессор ===\n";
+    cout << "\n=== Professor ===\n";
     prof.displayInfo();
 
     return 0;
