@@ -2,6 +2,135 @@
 
 #include <iostream>
 #include <string>
+using namespace std;
+
+class Student {
+private:
+    // Private fields: name, age, average grade, and grades array (5 elements)
+    string name;
+    int age;
+    double averageGrade;
+    int grades[5];
+
+public:
+    // Constructor with parameters
+    Student(string n, int a) : name(n), age(a), averageGrade(0.0) {
+        for (int i = 0; i < 5; ++i) {
+            grades[i] = 0;
+        }
+    }
+
+    // Getters
+    string getName() const {
+        return name;
+    }
+
+    int getAge() const {
+        return age;
+    }
+
+    double getAverageGrade() const {
+        return averageGrade;
+    }
+
+    int getGrade(int index) const {
+        if (index >= 0 && index < 5) {
+            return grades[index];
+        }
+        return -1; // Error code
+    }
+
+    // Setters with validation
+    void setName(string newName) {
+        if (!newName.empty()) {
+            name = newName;
+        } else {
+            cout << "Error: name cannot be empty" << endl;
+        }
+    }
+
+    void setAge(int newAge) {
+        if (newAge >= 16 && newAge <= 100) {
+            age = newAge;
+        } else {
+            cout << "Error: age must be between 16 and 100 years" << endl;
+        }
+    }
+
+    void setGrade(int index, int grade) {
+        if (index < 0 || index >= 5) {
+            cout << "Error: index must be between 0 and 4" << endl;
+            return;
+        }
+        if (grade >= 1 && grade <= 5) {
+            grades[index] = grade;
+            calculateAverage(); // Recalculate average grade
+        } else {
+            cout << "Error: grade must be between 1 and 5" << endl;
+        }
+    }
+
+    void calculateAverage() {
+        double sum = 0;
+        for (int i = 0; i < 5; ++i) {
+            sum += grades[i];
+        }
+        averageGrade = sum / 5.0;
+    }
+
+    void displayInfo() const {
+        cout << "Student: " << name << endl;
+        cout << "Age: " << age << " years" << endl;
+        cout << "Average Grade: " << averageGrade << endl;
+        cout << "Grades: ";
+        for (int i = 0; i < 5; ++i) {
+            cout << grades[i];
+            if (i < 4) cout << ", ";
+        }
+        cout << endl;
+    }
+
+    bool hasScholarship() const {
+        return averageGrade >= 4.5;
+    }
+};
+
+int main() {
+    Student student("Ivan Ivanov", 20);
+    
+    student.setGrade(0, 5);
+    student.setGrade(1, 4);
+    student.setGrade(2, 5);
+    student.setGrade(3, 3);
+    student.setGrade(4, 4);
+    
+    student.displayInfo();
+    
+    if (student.hasScholarship()) {
+        cout << "Student receives scholarship" << endl;
+    } else {
+        cout << "No scholarship awarded" << endl;
+    }
+
+ 
+    // Validation tests
+    student.setGrade(10, 5); // Invalid index
+    student.setGrade(2, 6);  // Invalid grade
+    student.setAge(15);      // Invalid age
+    
+    // Data modification
+    student.setName("Ivan Petrov");
+    student.setAge(21);
+    
+    student.displayInfo();
+
+    return 0;
+}
+
+##Задача 2: Наследование - Академические работники
+
+#include <iostream>
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -73,7 +202,6 @@ public:
     }
 
     double calcExperienceBonus() const {
-        // Experience bonus: 1% of salary per year of experience, capped at 50%
         double pct = 0.01 * yearsOfExperience;
         if (pct > 0.5) pct = 0.5;
         return salary * pct;
@@ -102,156 +230,6 @@ int main() {
     cout << "\n=== Professor ===\n";
     prof.displayInfo();
 
-    return 0;
-}
-
-
-##Задача 2: Наследование - Академические работники
-
-#include <iostream>
-#include <string>
-using namespace std;
-
-class Person {
-protected:
-    string name;
-    int age;
-    string address;
-
-public:
-    Person(string n, int a, string addr) : name(n), age(a), address(addr) {}
-    virtual void displayInfo() const {
-        cout << "Name: " << name << ", Age: " << age << ", Address: " << address << endl;
-    }
-    virtual ~Person() {}
-};
-
-class Student : public Person {
-private:
-    string studentId;
-    double averageGrade;
-
-public:
-    // Constructor
-    Student(string n, int a, string addr, string id, double grade) 
-        : Person(n, a, addr), studentId(id), averageGrade(grade) {}
-    
-    // Override displayInfo()
-    void displayInfo() const override {
-        cout << "STUDENT: " << endl;
-        Person::displayInfo();
-        cout << "Student ID: " << studentId << ", Average Grade: " << averageGrade << endl;
-        cout << "----------------------------------------" << endl;
-    }
-    
-    // Methods for grade management
-    void updateGrade(double newGrade) {
-        averageGrade = newGrade;
-        cout << "Student " << name << "'s average grade updated: " << averageGrade << endl;
-    }
-    
-    void addGrade(double grade) {
-        // Simple logic for demonstration
-        averageGrade = (averageGrade + grade) / 2;
-        cout << "Grade added: " << grade << ". New average grade: " << averageGrade << endl;
-    }
-    
-    double getAverageGrade() const {
-        return averageGrade;
-    }
-    
-    string getStudentId() const {
-        return studentId;
-    }
-};
-
-class Professor : public Person {
-private:
-    string department;
-    double salary;
-    int yearsOfExperience;
-
-public:
-    // Constructor
-    Professor(string n, int a, string addr, string dept, double sal, int exp) 
-        : Person(n, a, addr), department(dept), salary(sal), yearsOfExperience(exp) {}
-    
-    // Override displayInfo()
-    void displayInfo() const override {
-        cout << "PROFESSOR: " << endl;
-        Person::displayInfo();
-        cout << "Department: " << department << ", Salary: " << salary 
-             << " RUB, Experience: " << yearsOfExperience << " years" << endl;
-        cout << "Experience bonus: " << calculateExperienceBonus() << " RUB" << endl;
-        cout << "----------------------------------------" << endl;
-    }
-    
-    // Method to calculate experience bonus
-    double calculateExperienceBonus() const {
-        // Bonus of 5% of salary for every 5 years of experience
-        int bonusPeriods = yearsOfExperience / 5;
-        return salary * 0.05 * bonusPeriods;
-    }
-    
-    // Additional methods
-    void increaseExperience(int years = 1) {
-        yearsOfExperience += years;
-        cout << "Professor " << name << "'s experience increased by " << years 
-             << " years. Current experience: " << yearsOfExperience << " years" << endl;
-    }
-    
-    void setSalary(double newSalary) {
-        salary = newSalary;
-        cout << "Professor " << name << "'s salary set to: " << salary << " RUB" << endl;
-    }
-    
-    double getTotalSalary() const {
-        return salary + calculateExperienceBonus();
-    }
-    
-    string getDepartment() const {
-        return department;
-    }
-};
-
-int main() {
-    // Testing class hierarchy
-    cout << "=== ACADEMIC HIERARCHY TEST ===" << endl << endl;
-    
-    Student student("Petr Petrov", 20, "Studencheskaya St, 15", "S12345", 4.3);
-    Professor prof("Doctor Ivanov", 45, "Akademicheskaya St, 10", "Computer Science", 50000, 15);
-    
-    student.displayInfo();
-    prof.displayInfo();
-    
-    // Demonstrating method functionality
-    cout << "=== ADDITIONAL OPERATIONS ===" << endl << endl;
-    
-    // Student operations
-    student.addGrade(4.7);
-    student.updateGrade(4.5);
-    cout << "Student ID: " << student.getStudentId() << endl;
-    
-    cout << endl;
-    
-    // Professor operations
-    prof.increaseExperience(2);
-    cout << "Total salary with bonus: " << prof.getTotalSalary() << " RUB" << endl;
-    prof.setSalary(55000);
-    
-    cout << endl;
-    
-    // Polymorphism through base class pointer
-    cout << "=== POLYMORPHISM DEMONSTRATION ===" << endl << endl;
-    
-    Person* people[2];
-    people[0] = &student;
-    people[1] = &prof;
-    
-    for (int i = 0; i < 2; i++) {
-        people[i]->displayInfo();
-    }
-    
     return 0;
 }
 
