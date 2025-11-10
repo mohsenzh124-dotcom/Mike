@@ -738,55 +738,92 @@ int main() {
 }
 ####Задача 7: Дружественные функции и операторы
 #include <iostream>
+#include <string>
+#include <cmath>
 using namespace std;
 
-class Vector2D {
+class Complex {
 private:
-    double x, y;
+    double real;
+    double imaginary;
 
 public:
-    Vector2D(double x = 0, double y = 0) : x(x), y(y) {}
-
-    // Дружественные функции для операторов
-    friend Vector2D operator+(const Vector2D& a, const Vector2D& b);
-    friend Vector2D operator-(const Vector2D& a, const Vector2D& b);
-    friend ostream& operator<<(ostream& os, const Vector2D& v);
-    friend istream& operator>>(istream& is, Vector2D& v);
+    Complex(double r = 0, double i = 0) : real(r), imaginary(i) {}
+    
+    double getReal() const { return real; }
+    double getImaginary() const { return imaginary; }
+    void setReal(double r) { real = r; }
+    void setImaginary(double i) { imaginary = i; }
+    
+    Complex operator+(const Complex& other) const {
+        return Complex(real + other.real, imaginary + other.imaginary);
+    }
+    
+    Complex operator-(const Complex& other) const {
+        return Complex(real - other.real, imaginary - other.imaginary);
+    }
+    
+    Complex operator*(const Complex& other) const {
+        return Complex(real * other.real - imaginary * other.imaginary,
+                      real * other.imaginary + imaginary * other.real);
+    }
+    
+    bool operator==(const Complex& other) const {
+        return real == other.real && imaginary == other.imaginary;
+    }
+    
+    friend ostream& operator<<(ostream& os, const Complex& c);
+    friend istream& operator>>(istream& is, Complex& c);
+    
+    void display() const {
+        cout << real << " + " << imaginary << "i" << endl;
+    }
 };
 
-Vector2D operator+(const Vector2D& a, const Vector2D& b) {
-    return Vector2D(a.x + b.x, a.y + b.y);
-}
-
-Vector2D operator-(const Vector2D& a, const Vector2D& b) {
-    return Vector2D(a.x - b.x, a.y - b.y);
-}
-
-ostream& operator<<(ostream& os, const Vector2D& v) {
-    os << "(" << v.x << ", " << v.y << ")";
+ostream& operator<<(ostream& os, const Complex& c) {
+    if (c.imaginary >= 0)
+        os << c.real << " + " << c.imaginary << "i";
+    else
+        os << c.real << " - " << -c.imaginary << "i";
     return os;
 }
 
-istream& operator>>(istream& is, Vector2D& v) {
-    cout << "Введите x и y: ";
-    is >> v.x >> v.y;
+istream& operator>>(istream& is, Complex& c) {
+    cout << "Enter real and imaginary parts: ";
+    is >> c.real >> c.imaginary;
     return is;
 }
 
 int main() {
-    Vector2D v1, v2;
-    cin >> v1;
-    cin >> v2;
-
-    Vector2D sum = v1 + v2;
-    Vector2D diff = v1 - v2;
-
-    cout << "Сумма: " << sum << endl;
-    cout << "Разность: " << diff << endl;
-
+    Complex c1(3, 4);
+    Complex c2(1, -2);
+    Complex c3;
+    
+    cout << "Complex numbers:" << endl;
+    cout << "c1 = " << c1 << endl;
+    cout << "c2 = " << c2 << endl;
+    
+    cout << "\nArithmetic operations:" << endl;
+    Complex sum = c1 + c2;
+    Complex diff = c1 - c2;
+    Complex product = c1 * c2;
+    
+    cout << "c1 + c2 = " << sum << endl;
+    cout << "c1 - c2 = " << diff << endl;
+    cout << "c1 * c2 = " << product << endl;
+    
+    cout << "\nComparison:" << endl;
+    cout << "c1 == c2: " << (c1 == c2 ? "true" : "false") << endl;
+    cout << "c1 == c1: " << (c1 == c1 ? "true" : "false") << endl;
+    
+    cout << "\nEnter a new complex number:" << endl;
+    cin >> c3;
+    cout << "You entered: " << c3 << endl;
+    
+    cout << "c3 + c1 = " << (c3 + c1) << endl;
+    
     return 0;
 }
-
 
 ###Задача 8: Множественное наследование
 
