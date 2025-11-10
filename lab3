@@ -835,116 +835,550 @@ class Person {
 protected:
     string name;
     int age;
+
 public:
     Person(string n, int a) : name(n), age(a) {}
-    void displayInfo() const {
+    virtual void display() const {
         cout << "Имя: " << name << ", Возраст: " << age << endl;
     }
 };
 
-class Student : public Person {
-private:
-    string university;
+class Employee {
+protected:
+    string position;
+    double salary;
+
 public:
-    Student(string n, int a, string u) : Person(n, a), university(u) {}
-    void displayInfo() const {
-        Person::displayInfo();
-        cout << "Университет: " << university << endl;
+    Employee(string pos, double sal) : position(pos), salary(sal) {}
+    virtual void work() const {
+        cout << "Выполняет работу как сотрудник" << endl;
+    }
+};
+
+class Teacher : public Person, public Employee {
+private:
+    string subject;
+    int experienceYears;
+
+public:
+    Teacher(string n, int a, string pos, double sal, string subj, int exp)
+        : Person(n, a), Employee(pos, sal), subject(subj), experienceYears(exp) {}
+    
+    void display() const override {
+        Person::display();
+        cout << "Должность: " << position << ", Зарплата: " << salary << endl;
+        cout << "Предмет: " << subject << ", Опыт: " << experienceYears << " лет" << endl;
+    }
+    
+    void work() const override {
+        cout << "Преподает предмет: " << subject << endl;
+    }
+    
+    void gradeStudents() const {
+        cout << "Проверяет работы студентов по предмету " << subject << endl;
+    }
+    
+    void prepareLesson() const {
+        cout << "Готовит урок по " << subject << endl;
+    }
+};
+
+class Researcher {
+protected:
+    string researchArea;
+    int publicationsCount;
+
+public:
+    Researcher(string area, int publications) 
+        : researchArea(area), publicationsCount(publications) {}
+    
+    void conductResearch() const {
+        cout << "Проводит исследования в области: " << researchArea << endl;
+    }
+};
+
+class Professor : public Teacher, public Researcher {
+public:
+    Professor(string n, int a, string pos, double sal, string subj, int exp, 
+              string area, int publications)
+        : Teacher(n, a, pos, sal, subj, exp), 
+          Researcher(area, publications) {}
+    
+    void display() const override {
+        Teacher::display();
+        cout << "Область исследований: " << researchArea << endl;
+        cout << "Количество публикаций: " << publicationsCount << endl;
+    }
+    
+    void work() const override {
+        cout << "Профессор преподает " << subject << " и исследует " << researchArea << endl;
+    }
+    
+    void supervisePhD() const {
+        cout << "Руководит аспирантами в области " << researchArea << endl;
     }
 };
 
 int main() {
-    Student s("Иван Иванов", 20, "МГУ");
-    s.displayInfo();
+    cout << "=== Учитель ===" << endl;
+    Teacher teacher("Анна Иванова", 35, "Учитель", 50000, "Математика", 10);
+    teacher.display();
+    teacher.work();
+    teacher.gradeStudents();
+    teacher.prepareLesson();
+    
+    cout << "\n=== Профессор ===" << endl;
+    Professor prof("Дмитрий Петров", 45, "Профессор", 80000, "Физика", 15, 
+                   "Квантовая механика", 25);
+    prof.display();
+    prof.work();
+    prof.conductResearch();
+    prof.supervisePhD();
+    prof.gradeStudents();
+    
     return 0;
 }
-
 
 
 ####Задача 9: Шаблоны классов
 #include <iostream>
+#include <vector>
 #include <string>
 using namespace std;
 
-class Animal {
+template<typename T>
+class Stack {
+private:
+    vector<T> elements;
+    int capacity;
+
 public:
-    virtual void speak() const {
-        cout << "Животное издает звук" << endl;
+    Stack(int size = 10) : capacity(size) {}
+
+    void push(const T& element) {
+        if (elements.size() < capacity) {
+            elements.push_back(element);
+        } else {
+            cout << "Stack is full!" << endl;
+        }
+    }
+
+    T pop() {
+        if (!elements.empty()) {
+            T value = elements.back();
+            elements.pop_back();
+            return value;
+        } else {
+            cout << "Stack is empty!" << endl;
+            return T();
+        }
+    }
+
+    T top() const {
+        if (!elements.empty()) {
+            return elements.back();
+        } else {
+            cout << "Stack is empty!" << endl;
+            return T();
+        }
+    }
+
+    bool isEmpty() const {
+        return elements.empty();
+    }
+
+    bool isFull() const {
+        return elements.size() >= capacity;
+    }
+
+    int size() const {
+        return elements.size();
+    }
+
+    void display() const {
+        cout << "Stack: ";
+        for (const auto& elem : elements) {
+            cout << elem << " ";
+        }
+        cout << endl;
     }
 };
 
-class Dog : public Animal {
-public:
-    void speak() const override {
-        cout << "Собака лает: Гав-гав!" << endl;
-    }
-};
+template<typename T>
+class Queue {
+private:
+    vector<T> elements;
+    int capacity;
 
-class Cat : public Animal {
 public:
-    void speak() const override {
-        cout << "Кошка мяукает: Мяу!" << endl;
+    Queue(int size = 10) : capacity(size) {}
+
+    void enqueue(const T& element) {
+        if (elements.size() < capacity) {
+            elements.push_back(element);
+        } else {
+            cout << "Queue is full!" << endl;
+        }
+    }
+
+    T dequeue() {
+        if (!elements.empty()) {
+            T value = elements.front();
+            elements.erase(elements.begin());
+            return value;
+        } else {
+            cout << "Queue is empty!" << endl;
+            return T();
+        }
+    }
+
+    T front() const {
+        if (!elements.empty()) {
+            return elements.front();
+        } else {
+            cout << "Queue is empty!" << endl;
+            return T();
+        }
+    }
+
+    bool isEmpty() const {
+        return elements.empty();
+    }
+
+    bool isFull() const {
+        return elements.size() >= capacity;
+    }
+
+    int size() const {
+        return elements.size();
+    }
+
+    void display() const {
+        cout << "Queue: ";
+        for (const auto& elem : elements) {
+            cout << elem << " ";
+        }
+        cout << endl;
     }
 };
 
 int main() {
-    Animal* a1 = new Dog();
-    Animal* a2 = new Cat();
-    a1->speak();
-    a2->speak();
+    cout << "=== Stack<int> Test ===" << endl;
+    Stack<int> s1(3);
+    s1.push(10);
+    s1.push(20);
+    s1.push(30);
+    s1.display();
+    cout << "Top: " << s1.top() << endl;
+    cout << "Pop: " << s1.pop() << endl;
+    s1.display();
 
-    delete a1;
-    delete a2;
+    cout << "\n=== Stack<string> Test ===" << endl;
+    Stack<string> s2(2);
+    s2.push("Hello");
+    s2.push("World");
+    s2.display();
+    cout << "Top: " << s2.top() << endl;
+    s2.pop();
+    s2.display();
+
+    cout << "\n=== Queue<int> Test ===" << endl;
+    Queue<int> q1(3);
+    q1.enqueue(1);
+    q1.enqueue(2);
+    q1.enqueue(3);
+    q1.display();
+    cout << "Front: " << q1.front() << endl;
+    cout << "Dequeue: " << q1.dequeue() << endl;
+    q1.display();
+
+    cout << "\n=== Queue<string> Test ===" << endl;
+    Queue<string> q2(2);
+    q2.enqueue("Apple");
+    q2.enqueue("Banana");
+    q2.display();
+    cout << "Front: " << q2.front() << endl;
+    q2.dequeue();
+    q2.display();
+
     return 0;
 }
+
 
 ###Задача 10: Полная система с использованием всех принципов ООП
 #include <iostream>
 #include <string>
+#include <vector>
+#include <memory>
+#include <algorithm>
 using namespace std;
 
-class Shape {
+class UniversityMember {
+protected:
+    string name;
+    string id;
+    string email;
+
 public:
-    virtual double area() const = 0; // Чисто виртуальная функция
-    virtual void display() const = 0;
-    virtual ~Shape() {}
+    UniversityMember(string n, string i, string e) : name(n), id(i), email(e) {}
+    virtual ~UniversityMember() {}
+
+    virtual void displayInfo() const = 0;
+    virtual void work() const = 0;
+    virtual string getRole() const = 0;
+
+    string getId() const { return id; }
+    string getName() const { return name; }
 };
 
-class Rectangle : public Shape {
+class Student : public UniversityMember {
 private:
-    double width, height;
+    string major;
+    int year;
+    double gpa;
+    vector<string> courses;
+
 public:
-    Rectangle(double w, double h) : width(w), height(h) {}
-    double area() const override { return width * height; }
-    void display() const override {
-        cout << "Прямоугольник: ширина=" << width << ", высота=" << height
-             << ", площадь=" << area() << endl;
+    Student(string n, string i, string e, string mj, int yr)
+        : UniversityMember(n, i, e), major(mj), year(yr), gpa(0.0) {
     }
+
+    void enrollCourse(const string& course) {
+        courses.push_back(course);
+    }
+
+    void dropCourse(const string& course) {
+        auto it = find(courses.begin(), courses.end(), course);
+        if (it != courses.end()) courses.erase(it);
+    }
+
+    void calculateGPA() {
+        if (courses.empty()) {
+            gpa = 0.0;
+        }
+        else {
+            gpa = 2.0 + (static_cast<double>(courses.size()) / 10.0);
+            if (gpa > 4.0) gpa = 4.0;
+        }
+    }
+
+    void displayInfo() const override {
+        cout << "Student: " << name << " | ID: " << id << " | Email: " << email
+            << " | Major: " << major << " | Year: " << year << " | GPA: " << gpa << endl;
+        cout << "  Courses: ";
+        for (const auto& c : courses) cout << c << " ";
+        cout << endl;
+    }
+
+    void work() const override {
+        cout << name << " is studying and doing assignments." << endl;
+    }
+
+    string getRole() const override { return "Student"; }
+    const vector<string>& getCourses() const { return courses; }
+    double getGPA() const { return gpa; }
 };
 
-class Circle : public Shape {
+class Professor : public UniversityMember {
 private:
-    double radius;
+    string department;
+    string office;
+    double salary;
+    vector<string> teachingCourses;
+
 public:
-    Circle(double r) : radius(r) {}
-    double area() const override { return 3.14159 * radius * radius; }
-    void display() const override {
-        cout << "Круг: радиус=" << radius << ", площадь=" << area() << endl;
+    Professor(string n, string i, string e, string dept, string off, double sal)
+        : UniversityMember(n, i, e), department(dept), office(off), salary(sal) {
     }
+
+    void assignCourse(const string& course) {
+        teachingCourses.push_back(course);
+    }
+
+    void removeCourse(const string& course) {
+        auto it = find(teachingCourses.begin(), teachingCourses.end(), course);
+        if (it != teachingCourses.end()) teachingCourses.erase(it);
+    }
+
+    double calculateSalary() const {
+        return salary + (50.0 * teachingCourses.size());
+    }
+
+    void displayInfo() const override {
+        cout << "Professor: " << name << " | ID: " << id << " | Email: " << email
+            << " | Dept: " << department << " | Office: " << office
+            << " | Salary: " << salary << " | Total: " << calculateSalary() << endl;
+        cout << "  Teaching: ";
+        for (const auto& c : teachingCourses) cout << c << " ";
+        cout << endl;
+    }
+
+    void work() const override {
+        cout << name << " is teaching and preparing lectures." << endl;
+    }
+
+    string getRole() const override { return "Professor"; }
+    const vector<string>& getTeachingCourses() const { return teachingCourses; }
 };
+
+class Course {
+private:
+    string courseCode;
+    string courseName;
+    int credits;
+    Professor* instructor;
+    vector<Student*> enrolledStudents;
+
+public:
+    Course(string code, string name, int cr)
+        : courseCode(code), courseName(name), credits(cr), instructor(nullptr) {
+    }
+
+    void addStudent(Student* student) {
+        if (!student) return;
+        enrolledStudents.push_back(student);
+        student->enrollCourse(courseCode);
+    }
+
+    void removeStudent(const string& studentId) {
+        enrolledStudents.erase(
+            remove_if(enrolledStudents.begin(), enrolledStudents.end(),
+                [&](Student* s) {
+                    if (s && s->getId() == studentId) {
+                        s->dropCourse(courseCode);
+                        return true;
+                    }
+                    return false;
+                }),
+            enrolledStudents.end());
+    }
+
+    void setInstructor(Professor* prof) {
+        instructor = prof;
+        if (prof) prof->assignCourse(courseCode);
+    }
+
+    void displayCourseInfo() const {
+        cout << "Course: " << courseCode << " - " << courseName << " (" << credits << " credits)" << endl;
+        if (instructor) cout << "  Instructor: " << instructor->getName() << endl;
+        else cout << "  Instructor: TBA" << endl;
+        cout << "  Students: ";
+        for (const auto& s : enrolledStudents) {
+            if (s) cout << s->getName() << "(" << s->getId() << ") ";
+        }
+        cout << endl;
+    }
+
+    string getCode() const { return courseCode; }
+};
+
+class University {
+private:
+    string name;
+    vector<unique_ptr<UniversityMember>> members;
+    vector<unique_ptr<Course>> courses;
+    static int totalUniversities;
+
+public:
+    University(string n) : name(n) { totalUniversities++; }
+    ~University() { totalUniversities--; }
+
+    Student* addStudent(const string& n, const string& i, const string& e, const string& major, int year) {
+        auto ptr = make_unique<Student>(n, i, e, major, year);
+        Student* raw = ptr.get();
+        members.push_back(move(ptr));
+        return raw;
+    }
+
+    Professor* addProfessor(const string& n, const string& i, const string& e, const string& dept, const string& office, double salary) {
+        auto ptr = make_unique<Professor>(n, i, e, dept, office, salary);
+        Professor* raw = ptr.get();
+        members.push_back(move(ptr));
+        return raw;
+    }
+
+    Course* addCourse(const string& code, const string& name, int credits) {
+        auto cptr = make_unique<Course>(code, name, credits);
+        Course* raw = cptr.get();
+        courses.push_back(move(cptr));
+        return raw;
+    }
+
+    UniversityMember* findMemberById(const string& id) {
+        for (auto& m : members) {
+            if (m->getId() == id) return m.get();
+        }
+        return nullptr;
+    }
+
+    Course* findCourseByCode(const string& code) {
+        for (auto& c : courses) {
+            if (c->getCode() == code) return c.get();
+        }
+        return nullptr;
+    }
+
+    bool enrollStudentInCourse(const string& studentId, const string& courseCode) {
+        UniversityMember* um = findMemberById(studentId);
+        Course* c = findCourseByCode(courseCode);
+        if (!um || !c) return false;
+        Student* s = dynamic_cast<Student*>(um);
+        if (!s) return false;
+        c->addStudent(s);
+        s->calculateGPA();
+        return true;
+    }
+
+    bool assignInstructorToCourse(const string& profId, const string& courseCode) {
+        UniversityMember* um = findMemberById(profId);
+        Course* c = findCourseByCode(courseCode);
+        if (!um || !c) return false;
+        Professor* p = dynamic_cast<Professor*>(um);
+        if (!p) return false;
+        c->setInstructor(p);
+        return true;
+    }
+
+    void displayAllMembers() const {
+        cout << "\nMembers of " << name << ":\n";
+        for (const auto& m : members) m->displayInfo();
+    }
+
+    void displayAllCourses() const {
+        cout << "\nCourses at " << name << ":\n";
+        for (const auto& c : courses) c->displayCourseInfo();
+    }
+
+    static int getTotalUniversities() { return totalUniversities; }
+};
+
+int University::totalUniversities = 0;
 
 int main() {
-    Shape* s1 = new Rectangle(4, 5);
-    Shape* s2 = new Circle(3);
+    University uni("Simple University");
 
-    s1->display();
-    s2->display();
+    Student* s1 = uni.addStudent("Alice", "S001", "alice@mail.com", "CS", 2);
+    Student* s2 = uni.addStudent("Bob", "S002", "bob@mail.com", "Math", 1);
 
-    delete s1;
-    delete s2;
+    Professor* p1 = uni.addProfessor("Dr. Smith", "P001", "smith@mail.com", "CS", "RM101", 3000.0);
+    Professor* p2 = uni.addProfessor("Dr. Lee", "P002", "lee@mail.com", "Math", "RM102", 3200.0);
+
+    Course* c1 = uni.addCourse("CS101", "Intro to CS", 3);
+    Course* c2 = uni.addCourse("MATH101", "Calculus I", 4);
+
+    uni.assignInstructorToCourse("P001", "CS101");
+    uni.assignInstructorToCourse("P002", "MATH101");
+
+    uni.enrollStudentInCourse("S001", "CS101");
+    uni.enrollStudentInCourse("S002", "MATH101");
+    uni.enrollStudentInCourse("S001", "MATH101");
+
+    uni.displayAllMembers();
+    uni.displayAllCourses();
+
+    cout << "\nTotal universities: " << University::getTotalUniversities() << endl;
     return 0;
 }
-
 
 
 
